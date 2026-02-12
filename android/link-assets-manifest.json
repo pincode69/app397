@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Knewave-Regular.ttf",
+      "sha1": "d52404ee740f4d499cc1c3502cae3ead979aedba"
+    },
+    {
+      "path": "assets/fonts/Fredoka-VariableFont_wdth,wght.ttf",
+      "sha1": "a7e9cc9c1cd4e2b8339b389300ea65dc0fba59a9"
+    }
+  ]
+}
