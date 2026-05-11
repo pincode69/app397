@@ -15,7 +15,7 @@ definitions:
       APP_STORE_APP_ID: 6767280890
       BUILD_ENV: production
     node: 20
-    xcode: latest
+    xcode: 26.3
     cocoapods: default
 
   ios_base: &ios_base
