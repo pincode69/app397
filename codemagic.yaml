@@ -8,11 +8,11 @@ definitions:
   ios_environment: &ios_environment
     ios_signing:
       distribution_type: app_store
-      bundle_identifier: com.icyfish
+      bundle_identifier: com.tensionline.fish
     vars:
       XCODE_WORKSPACE: "IcyFish.xcworkspace"
       XCODE_SCHEME: "IcyFish"
-      APP_STORE_APP_ID: 6757937669
+      APP_STORE_APP_ID: 6767280890
       BUILD_ENV: production
     node: 20
     xcode: latest
@@ -64,9 +64,9 @@ workflows:
     environment:
       <<: *ios_environment
       vars:
-        XCODE_WORKSPACE: "app_rd_13_p_1.xcworkspace" # Example: "app_rd_13_p_1.xcworkspace"
-        XCODE_SCHEME: "app_rd_13_p_1" # Example: "app_rd_13_p_1"
-        APP_STORE_APP_ID: 6757937669 # Example: 6757937669
+        XCODE_WORKSPACE: "IcyFish.xcworkspace" # Example: "app_rd_13_p_1.xcworkspace"
+        XCODE_SCHEME: "IcyFish" # Example: "app_rd_13_p_1"
+        APP_STORE_APP_ID: 6767280890
         BUILD_ENV: production
         APP_FLAVOR: ios-white
 
@@ -85,9 +85,9 @@ workflows:
     environment:
       <<: *ios_environment
       vars:
-        XCODE_WORKSPACE: "app_rd_13_p_1.xcworkspace" # Example: "app_rd_13_p_1.xcworkspace"
-        XCODE_SCHEME: "app_rd_13_p_1" # Example: "app_rd_13_p_1"
-        APP_STORE_APP_ID: 6757937669 # Example: 6757937669
+        XCODE_WORKSPACE: "IcyFish.xcworkspace" # Example: "app_rd_13_p_1.xcworkspace"
+        XCODE_SCHEME: "IcyFish" # Example: "app_rd_13_p_1"
+        APP_STORE_APP_ID: 6767280890
         BUILD_ENV: production
         APP_FLAVOR: ios-black
 
@@ -105,12 +105,12 @@ workflows:
           include: true
     environment:
       android_signing:
-        - app397keystore
+        - rd_app_16_android_keystore # Reference name from Codemagic dashboard
       vars:
         APP_FLAVOR: android-white
         BUILD_ENV: production
-        PACKAGE_NAME: "com.icyfish"
-      node: 20
+        PACKAGE_NAME: "com.velora.cardlounge.app" # Example: com.your.app.package
+      node: 18
       java: 17
     scripts:
       - *common_scripts
@@ -123,6 +123,24 @@ workflows:
           ./gradlew bundleRelease assembleRelease \
             -PversionCode=$BUILD_NUMBER \
             -PversionName=1.0.$BUILD_NUMBER
+      - name: Rename artifacts
+        script: |
+          APP_NAME=$(basename "$CM_REPO_SLUG")
+          VERSION=$(grep 'versionName ' android/app/build.gradle | sed 's/.*versionName "\(.*\)"/\1/')
+          VERSION_CODE=$(grep 'versionCode ' android/app/build.gradle | sed 's/.*versionCode \([0-9]*\)/\1/')
+          COLOR=$(echo \"$APP_FLAVOR\" | sed 's/android-//')
+          # Rename APK
+          APK_PATH=$(find android/app/build/outputs -name "*.apk" | head -1)
+          if [ -n "$APK_PATH" ]; then
+            APK_DIR=$(dirname "$APK_PATH")
+            mv "$APK_PATH" "$APK_DIR/${APP_NAME}-${COLOR}-${VERSION}-${VERSION_CODE}-release.apk"
+          fi
+          # Rename AAB
+          AAB_PATH=$(find android/app/build/outputs -name "*.aab" | head -1)
+          if [ -n "$AAB_PATH" ]; then
+            AAB_DIR=$(dirname "$AAB_PATH")
+            mv "$AAB_PATH" "$AAB_DIR/${APP_NAME}-${COLOR}-${VERSION}-${VERSION_CODE}-release.aab"
+          fi
     artifacts:
       - android/app/build/outputs/**/*.apk
       - android/app/build/outputs/**/*.aab
@@ -141,12 +159,12 @@ workflows:
           include: true
     environment:
       android_signing:
-        - app397keystore
+        - rd_app_16_android_keystore # Reference name from Codemagic dashboard
       vars:
         APP_FLAVOR: android-black
         BUILD_ENV: production
-        PACKAGE_NAME: "com.icyfish"
-      node: 20
+        PACKAGE_NAME: "com.velora.cardlounge.app" # Example: com.your.app.package
+      node: 18
       java: 17
     scripts:
       - *common_scripts
@@ -159,6 +177,24 @@ workflows:
           ./gradlew bundleRelease assembleRelease \
             -PversionCode=$BUILD_NUMBER \
             -PversionName=1.0.$BUILD_NUMBER
+      - name: Rename artifacts
+        script: |
+          APP_NAME=$(basename "$CM_REPO_SLUG")
+          VERSION=$(grep 'versionName ' android/app/build.gradle | sed 's/.*versionName "\(.*\)"/\1/')
+          VERSION_CODE=$(grep 'versionCode ' android/app/build.gradle | sed 's/.*versionCode \([0-9]*\)/\1/')
+          COLOR=$(echo \"$APP_FLAVOR\" | sed 's/android-//')
+          # Rename APK
+          APK_PATH=$(find android/app/build/outputs -name "*.apk" | head -1)
+          if [ -n "$APK_PATH" ]; then
+            APK_DIR=$(dirname "$APK_PATH")
+            mv "$APK_PATH" "$APK_DIR/${APP_NAME}-${COLOR}-${VERSION}-${VERSION_CODE}-release.apk"
+          fi
+          # Rename AAB
+          AAB_PATH=$(find android/app/build/outputs -name "*.aab" | head -1)
+          if [ -n "$AAB_PATH" ]; then
+            AAB_DIR=$(dirname "$AAB_PATH")
+            mv "$AAB_PATH" "$AAB_DIR/${APP_NAME}-${COLOR}-${VERSION}-${VERSION_CODE}-release.aab"
+          fi
     artifacts:
       - android/app/build/outputs/**/*.apk
       - android/app/build/outputs/**/*.aab
